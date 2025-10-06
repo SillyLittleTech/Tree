@@ -1,0 +1,10 @@
+# Cloudflare Pages Redirects
+# Format: /source /destination [status]
+# Status codes: 301 (permanent), 302 (temporary), default is 302
+
+# Example redirects - customize these as needed
+/magic/GH https://github.com/kiyarose 301
+/magic/BS https://bsky.app/profile/kiya.cat 301
+
+# Add more redirects below in the same format:
+# /magic/SHORT_CODE https://destination-url.com 301
