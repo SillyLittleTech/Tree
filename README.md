@@ -24,7 +24,7 @@ Short URL redirect system using Cloudflare Pages format:
 1. Connect your repository to Cloudflare Pages
 2. Set build settings to:
    - Build command: (none needed)
-   - Build output directory: `/`
+   - Build output directory: `/magic`
 3. Deploy!
 
 The `_redirects` file in `/magic/` will automatically be processed by Cloudflare Pages.
@@ -40,7 +40,7 @@ Edit `/grow/index.html` to customize:
 #### Magic (Redirects)
 Edit `/magic/_redirects` to add new redirects:
 ```
-/magic/CODE https://destination-url.com 301
+/CODE https://destination-url.com 301
 ```
 
 Format: `source destination [status_code]`
