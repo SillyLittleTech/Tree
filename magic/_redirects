@@ -2,9 +2,11 @@
 # Format: /source /destination [status]
 # Status codes: 301 (permanent), 302 (temporary), default is 302
 
-# Example redirects - customize these as needed
+# Social Media Redirects
 /magic/GH https://github.com/kiyarose 301
-/magic/BS https://bsky.app/profile/kiya.cat 301
+/magic/BS https://bsky.app/profile/sillylittle.tech 301
+/magic/IG https://instagram.com/kitadire 301
+/magic/LI https://linkedin.com/in/kiyarose 301
 
 # Add more redirects below in the same format:
 # /magic/SHORT_CODE https://destination-url.com 301
