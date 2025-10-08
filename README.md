@@ -1,58 +1,83 @@
 # TreeDirect
 
 Branching Tree website @sillylittle.tech and Redirect tool @kiya.party
+# KR_Tree (template)
 
-## Features
+A tiny, static link-tree + redirect template intended to be forked and customized.
 
-### 🌱 Grow - Link Tree Website (`/grow/`)
-A customizable link tree website with:
-- Clean, modern design
-- Light/dark mode toggle (similar to kiya.cat)
-- Responsive layout for mobile and desktop
-- Easy to customize links and profile information
+Overview
+- `grow/` — Link-tree style static site (pure HTML/CSS/JS). Theme toggling uses `data-theme` on `<html>` and is persisted in `localStorage` (`/grow/script.js`). Edit `/grow/index.html`, `/grow/style.css` and `/grow/script.js` to customize.
+- `magic/` — Redirect bundle for Cloudflare Pages. Short links are declared in `/magic/_redirects` using the Cloudflare `_redirects` format. The Pages build output should be configured to use `/magic` so Cloudflare will process the `_redirects` file.
+- Root `index.html` is a small landing page that links to both sections. There is no build system — this is plain static content.
 
-### ✨ Magic - URL Redirects (`/magic/`)
-Short URL redirect system using Cloudflare Pages format:
-- Simple redirect management via `_redirects` file
-- Example redirects included (GH → GitHub, BS → Bluesky)
-- Easy to add new short links
+Why use this as a template
+- Minimal, easy-to-edit structure for personal link pages and short redirects.
+- Keeps redirects and the public-facing listing together so site owners can update links in a single repo.
 
-## Setup
+Quick start (local)
+1. Clone or fork this repository.
+2. Serve the repo locally to browse the pages:
 
-### For Cloudflare Pages
+```bash
+# from repo root
+python3 -m http.server 8000
+```
 
-1. Connect your repository to Cloudflare Pages
-2. Set build settings to:
-   - Build command: (none needed)
-   - Build output directory: `/magic`
-3. Deploy!
+Open `http://localhost:8000/` and click through `grow/` and `magic/`.
 
-The `_redirects` file in `/magic/` will automatically be processed by Cloudflare Pages.
+Note: Local static servers will not process `_redirects` the way Cloudflare Pages does; `/magic/index.html` is a human-readable listing of redirects for local testing.
 
-### Customization
+Customizing the Grow link tree
+- Edit `/grow/index.html` to change the profile, avatar, bio and link list. Preserve the `.links` container and `.link-button` markup.
+   - Example: add a link inside the `.links` container:
 
-#### Grow (Link Tree)
-Edit `/grow/index.html` to customize:
-- Profile name and bio
-- Avatar/profile picture
-- Links and their destinations
+```html
+<a href="https://example.com" class="link-button">
+   <span class="link-title">Example</span>
+</a>
+```
 
-#### Magic (Redirects)
-Edit `/magic/_redirects` to add new redirects:
+- Theme variables live in `/grow/style.css`. The JS in `/grow/script.js` sets `data-theme` on `<html>` and saves the selection to `localStorage`. If you rename variables in CSS, update the JS behavior accordingly.
+
+Managing short links (Magic)
+- Add redirects to `/magic/_redirects` using Cloudflare's format:
+
 ```
 /CODE https://destination-url.com 301
 ```
 
-Format: `source destination [status_code]`
-- 301 = permanent redirect
-- 302 = temporary redirect (default)
+- Fields: `source destination [status]`. The status is optional (e.g. `301` permanent, `302` temporary).
+- Example already present in `/magic/_redirects`: `/GH https://github.com 302` (or similar). The `/magic/index.html` file lists examples for humans.
 
-## Local Development
+Deploying to Cloudflare Pages
+1. Connect the repository to Cloudflare Pages.
+2. In Pages build settings set:
+    - Build command: (none)
+    - Build output directory: `/magic`
+3. Deploy. Cloudflare will process `/magic/_redirects` and create the short links.
 
-Simply open `index.html` in your browser to navigate between sections.
+short.io integration (optional)
+If you want to use a custom short domain (like `go.example.com`) instead of Cloudflare Pages path redirects, consider short.io (or a similar short-link provider). Typical steps:
 
-For the link tree with theme toggle, open `/grow/index.html` directly.
+1. Register an account on short.io and add your domain (e.g. `go.example.com`).
+2. In your DNS provider, add the records short.io requires (usually a CNAME pointing `go` to `c.short.io` or similar — follow short.io docs). Do NOT commit secrets or API keys to this repo.
+3. Configure short.io to forward short codes to your destination URLs. short.io provides a dashboard and API for creating/updating short links programmatically.
 
-## License
+Notes about choosing short.io vs Cloudflare redirects
+- Cloudflare Pages `_redirects` is simple (source -> destination) and lives in the repo; it's ideal for static repo-driven redirects.
+- short.io gives you a branded short domain and analytics, and an API to create links dynamically (useful if you want programmatic short link creation outside the Pages workflow).
 
-BSD 3-Clause License - See LICENSE file for details.
+Contributing & conventions
+- Keep changes minimal and static — avoid adding build tools without a clear reason.
+- When editing links, prefer updating `grow/index.html` and `/magic/_redirects` together so the human-facing list and redirect behavior stay in sync.
+- Prefer inline SVGs for icons (the repo uses inline SVGs in the HTML); adding an external icon library is unnecessary for this small template.
+
+Checklist before merging link/redirect changes
+- Update `/grow/index.html` (UI) if you add or remove short codes.
+- Update `/magic/_redirects` for the actual redirect mapping.
+- Preview locally (open files or run a static server) and double-check HTML/CSS.
+
+License
+- BSD 3-Clause (see `LICENSE`).
+
+If you'd like, I can also add a short CONTRIBUTING.md with a PR checklist and recommended commit message prefixes for `grow:` and `magic:` edits.
