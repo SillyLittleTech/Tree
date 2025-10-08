@@ -79,5 +79,3 @@ Checklist before merging link/redirect changes
 
 License
 - BSD 3-Clause (see `LICENSE`).
-
-If you'd like, I can also add a short CONTRIBUTING.md with a PR checklist and recommended commit message prefixes for `grow:` and `magic:` edits.
