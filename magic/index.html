@@ -107,17 +107,65 @@
             <h2>Available Redirects:</h2>
             <a href="/magic/GH" class="example-link">
                 /GH <span class="arrow">→</span> GitHub
-            </a>
-            <a href="/magic/BS" class="example-link">
-                /BS <span class="arrow">→</span> Bluesky
-            </a>
-            <a href="/magic/IG" class="example-link">
-                /IG <span class="arrow">→</span> Instagram
-            </a>
-            <a href="/magic/LI" class="example-link">
-                /LI <span class="arrow">→</span> LinkedIn
-            </a>
+        <div class="examples">
+            <h2>Available Redirects:</h2>
+            <div id="redirectList">
+                <p style="opacity:0.85">Loading redirects…</p>
+            </div>
         </div>
     </div>
-</body>
-</html>
+
+    <script>
+    // Fetch and parse the _redirects file residing in the same directory as this page.
+    // Expected format per-line: /SHORT_CODE destination [status]
+    async function loadRedirects() {
+        const container = document.getElementById('redirectList');
+        try {
+            const res = await fetch('./_redirects', {cache: 'no-store'});
+            if (!res.ok) throw new Error('Fetch failed: ' + res.status);
+            const text = await res.text();
+            const lines = text.split(/\r?\n/);
+            const entries = [];
+            for (let raw of lines) {
+                const line = raw.trim();
+                if (!line) continue; // skip empty
+                if (line.startsWith('#')) continue; // skip comments
+                // split on whitespace, but destination may contain query strings — split to max 3 parts
+                const parts = line.split(/\s+/);
+                if (parts.length < 2) continue; // invalid line
+                const source = parts[0];
+                const destination = parts[1];
+                entries.push({source, destination});
+            }
+
+            container.innerHTML = '';
+            if (entries.length === 0) {
+                container.innerHTML = '<p style="opacity:0.85">No redirects found in <code>_redirects</code>.</p>';
+                return;
+            }
+
+            for (const e of entries) {
+                // Display human-friendly text: show source (without leading slash when appropriate)
+                const code = e.source.replace(/^\//, '');
+                const a = document.createElement('a');
+                // Link to the local short path so clicking in the browser will follow relative routing
+                a.href = './' + code;
+                a.className = 'example-link';
+                a.innerHTML = document.createElement('span');
+                // Build inner HTML safely
+                a.innerHTML = '<span class="code-inline">/' + code + '</span> <span class="arrow">\u2192</span> ' + escapeHtml(e.destination);
+                container.appendChild(a);
+            }
+        } catch (err) {
+            console.error('Error loading redirects:', err);
+            container.innerHTML = '<p style="opacity:0.85">Unable to load redirects. Check that <code>_redirects</code> exists and is accessible.</p>';
+        }
+    }
+
+    function escapeHtml(s) {
+        return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    // Run on load
+    document.addEventListener('DOMContentLoaded', loadRedirects);
+    </script>

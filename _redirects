@@ -1,0 +1,3 @@
+# master redirects file if you wanted to build from root
+/magic magic/index.html 301
+/grow grow/index.html 301
